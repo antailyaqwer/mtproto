@@ -2,6 +2,9 @@ package com.attafitamim.mtproto.security.cipher.aes
 
 import com.attafitamim.mtproto.security.cipher.core.CipherMode
 import com.attafitamim.mtproto.security.cipher.core.ICipher
+import com.attafitamim.mtproto.security.digest.core.Digest
+import com.attafitamim.mtproto.security.digest.core.DigestMode
+import com.attafitamim.mtproto.security.utils.CryptoUtils
 import kotlin.experimental.xor
 
 class AesIgeCipher(
@@ -116,5 +119,33 @@ class AesIgeCipher(
         processedBlocks += blocksCount
     }
 
-    companion object
+    companion object {
+
+        fun computeAesKey(
+            authKey: ByteArray,
+            msgKey: ByteArray,
+            isOutgoing: Boolean = true
+        ): AesKey {
+            val x = if (isOutgoing) 0 else 8
+            val a = Digest(DigestMode.SHA256).digest(msgKey, CryptoUtils.subArray(authKey, x, 36))
+            val b = Digest(DigestMode.SHA256).digest(CryptoUtils.subArray(authKey, x + 40, 36), msgKey)
+
+            val key = CryptoUtils.subArray(a, 0, 8) + CryptoUtils.subArray(
+                b,
+                8,
+                16
+            ) + CryptoUtils.subArray(a, 24, 8)
+            val iv = CryptoUtils.subArray(b, 0, 8) + CryptoUtils.subArray(
+                a,
+                8,
+                16
+            ) + CryptoUtils.subArray(b, 24, 8)
+
+            val aesSecretKey = EncodedAesSecretKey(key)
+            return AesKey(
+                aesSecretKey,
+                iv
+            )
+        }
+    }
 }

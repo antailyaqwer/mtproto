@@ -17,6 +17,7 @@ class TLBufferedInputStream(
 ) : TLInputStream {
 
     override var position: Int by buffer::position
+    override val remaining: Int by buffer::remaining
 
     override fun readByte(): Byte =
         buffer.getByte()

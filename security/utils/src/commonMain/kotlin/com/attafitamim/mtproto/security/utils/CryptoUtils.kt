@@ -1,8 +1,9 @@
-package com.attafitamim.mtproto.client.connection.auth
+package com.attafitamim.mtproto.security.utils
 
 import kotlin.random.Random.Default.nextBytes
 
 object CryptoUtils {
+
     fun concat(vararg v: ByteArray): ByteArray {
         val totalLength = v.sumOf {  byteArray ->
             byteArray.size

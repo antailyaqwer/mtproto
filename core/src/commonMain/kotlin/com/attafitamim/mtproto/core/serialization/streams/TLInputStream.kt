@@ -2,6 +2,7 @@ package com.attafitamim.mtproto.core.serialization.streams
 
 interface TLInputStream {
     var position: Int
+    val remaining: Int
     fun readByte(): Byte
     fun readInt(): Int
     fun readLong(): Long

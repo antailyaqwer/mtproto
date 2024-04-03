@@ -7,7 +7,6 @@ import com.attafitamim.mtproto.client.api.connection.IConnectionProvider
 import com.attafitamim.mtproto.client.connection.auth.AuthCredentials
 import com.attafitamim.mtproto.client.connection.auth.AuthKey
 import com.attafitamim.mtproto.client.connection.auth.AuthResult
-import com.attafitamim.mtproto.client.connection.auth.CryptoUtils
 import com.attafitamim.mtproto.client.connection.auth.IAuthenticationStorage
 import com.attafitamim.mtproto.client.connection.auth.PQLongSolver
 import com.attafitamim.mtproto.client.connection.exceptions.TLConnectionError
@@ -56,6 +55,7 @@ import com.attafitamim.mtproto.security.cipher.rsa.RsaKey
 import com.attafitamim.mtproto.security.digest.core.Digest
 import com.attafitamim.mtproto.security.digest.core.DigestMode
 import com.attafitamim.mtproto.security.obfuscation.DefaultObfuscator
+import com.attafitamim.mtproto.security.utils.CryptoUtils
 import com.attafitamim.mtproto.security.utils.SecureRandom
 import com.attafitamim.mtproto.serialization.stream.TLBufferedInputStream
 import com.attafitamim.mtproto.serialization.utils.calculateData
@@ -576,7 +576,7 @@ class ConnectionManager(
         val msgKey = generateMsgKey(encryptedMessageBytes)
 
         // Encrypt data
-        val aesKey = computeAesKey(authCredentials.key.key, msgKey)
+        val aesKey = AesIgeCipher.computeAesKey(authCredentials.key.key, msgKey)
         val encryptedData = AesIgeCipher(
             CipherMode.ENCRYPT,
             aesKey,
@@ -603,7 +603,7 @@ class ConnectionManager(
 
         // Message key
         val msgKey = stream.readBytes(16)
-        val aesKeyIvPair = computeAesKey(authCredentials.key.key, msgKey, isOutgoing = false)
+        val aesKeyIvPair = AesIgeCipher.computeAesKey(authCredentials.key.key, msgKey, isOutgoing = false)
 
         // Read encrypted data
         val encryptedDataLength = size - 24 // Subtract authKey(8) + msgKey(16) length
@@ -1090,33 +1090,6 @@ class ConnectionManager(
             DigestMode.SHA1
         ).digest(unencryptedData), 4, 16
     )
-
-    private fun computeAesKey(
-        authKey: ByteArray,
-        msgKey: ByteArray,
-        isOutgoing: Boolean = true
-    ): AesKey {
-        val x = if (isOutgoing) 0 else 8
-        val a = Digest(DigestMode.SHA256).digest(msgKey, CryptoUtils.subArray(authKey, x, 36))
-        val b = Digest(DigestMode.SHA256).digest(CryptoUtils.subArray(authKey, x + 40, 36), msgKey)
-
-        val key = CryptoUtils.subArray(a, 0, 8) + CryptoUtils.subArray(
-            b,
-            8,
-            16
-        ) + CryptoUtils.subArray(a, 24, 8)
-        val iv = CryptoUtils.subArray(b, 0, 8) + CryptoUtils.subArray(
-            a,
-            8,
-            16
-        ) + CryptoUtils.subArray(b, 24, 8)
-
-        val aesSecretKey = EncodedAesSecretKey(key)
-        return AesKey(
-            aesSecretKey,
-            iv
-        )
-    }
 
     private fun MutableMap<ConnectionType, ArrayDeque<ByteArray>>.provideQueue(key: ConnectionType) =
         getOrPut(key, ::ArrayDeque)

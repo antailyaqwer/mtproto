@@ -20,6 +20,7 @@ kotlin {
             dependencies {
                 implementation(projects.mtproto.buffer)
                 implementation(projects.mtproto.security.utils)
+                implementation(projects.mtproto.security.digest)
                 implementation(libs.kotlin.io)
             }
         }
