@@ -11,7 +11,7 @@ import org.gradle.plugins.signing.SigningExtension
 
 object PublishUtils {
 
-    const val VERSION = "3.0.3-alpha02"
+    const val VERSION = "3.0.3-alpha03"
     const val GROUP_ID = "com.attafitamim.mtproto"
 
     fun Project.configurePublishing(
@@ -70,13 +70,13 @@ object PublishUtils {
             }
 
             extensions.configure<SigningExtension> {
-                useInMemoryPgpKeys(
-                    rootProject.requireExtraString("signing.keyId"),
-                    rootProject.requireExtraString("signing.key"),
-                    rootProject.requireExtraString("signing.password"),
-                )
-
-                sign(publications)
+//                useInMemoryPgpKeys(
+//                    rootProject.requireExtraString("signing.keyId"),
+//                    rootProject.requireExtraString("signing.key"),
+//                    rootProject.requireExtraString("signing.password"),
+//                )
+//
+//                sign(publications)
             }
         }
     }

@@ -1,17 +1,17 @@
 [versions]
 
 # Plugins
-android-gradle-plugin = "8.1.4"
-kotlinpoet = "1.14.2"
+android-gradle-plugin = "8.3.1"
+kotlinpoet = "1.16.0"
 
 # Ktor
-ktor = "2.3.5"
+ktor = "2.3.6"
 
 # Kotlin
-kotlin-coroutines = "1.7.3"
-kotlin = "1.9.20"
-kotlin-serialization = "1.6.0"
-kotlin-datetime = "0.4.1"
+kotlin-coroutines = "1.8.0"
+kotlin = "1.9.23"
+kotlin-serialization = "1.6.3"
+kotlin-datetime = "0.5.0"
 kotlin-io = "0.3.0"
 
 # Docs
@@ -27,13 +27,13 @@ settings = "1.1.1"
 nexus = "1.1.0"
 
 # Math
-bignum = "0.3.8"
+bignum = "0.3.9"
 
 # Compose
-compose = "1.5.4"
-compose-compiler = "1.5.4"
-compose-material3 = "1.1.2"
-androidx-activityCompose = "1.8.0"
+compose = "1.6.5"
+compose-compiler = "1.5.11"
+compose-material3 = "1.2.1"
+androidx-activityCompose = "1.8.2"
 
 [libraries]
 # Plugins
