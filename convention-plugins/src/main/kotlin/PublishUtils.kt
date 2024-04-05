@@ -70,13 +70,13 @@ object PublishUtils {
             }
 
             extensions.configure<SigningExtension> {
-//                useInMemoryPgpKeys(
-//                    rootProject.requireExtraString("signing.keyId"),
-//                    rootProject.requireExtraString("signing.key"),
-//                    rootProject.requireExtraString("signing.password"),
-//                )
-//
-//                sign(publications)
+                useInMemoryPgpKeys(
+                    rootProject.requireExtraString("signing.keyId"),
+                    rootProject.requireExtraString("signing.key"),
+                    rootProject.requireExtraString("signing.password"),
+                )
+
+                sign(publications)
             }
         }
     }
